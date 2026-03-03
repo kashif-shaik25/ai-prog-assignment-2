@@ -1,7 +1,7 @@
 import csv
 
-class AQIReflexAgent:
-    def __init__(self, rule_set):
+class AQIModelBasedAgent:
+    def __init__(self, rule_set="Official_Breakpoints"):
         self.rules = rule_set
 
     def perceive(self, file_path):
@@ -12,23 +12,28 @@ class AQIReflexAgent:
         except FileNotFoundError:
             return []
 
-    def act(self, pm_value):
-        if pm_value <= 12.0:
-            return "Good (Green)"
-        elif pm_value <= 35.4:
-            return "Moderate (Yellow)"
-        elif pm_value <= 55.4:
-            return "Unhealthy for Sensitive Groups (Orange)"
-        elif pm_value <= 150.4:
-            return "Unhealthy (Red)"
+    def act(self, x):
+        if x <= 30:
+            return x * 50 / 30
+        elif x <= 60:
+            return 50 + (x - 30) * 50 / 30
+        elif x <= 90:
+            return 100 + (x - 60) * 100 / 30
+        elif x <= 120:
+            return 200 + (x - 90) * 100 / 30
+        elif x <= 250:
+            return 300 + (x - 120) * 100 / 130
+        elif x > 250:
+            return 400 + (x - 250) * 100 / 130
         else:
-            return "Hazardous (Purple)"
+            return 0
 
     def run(self, file_path):
         readings = self.perceive(file_path)
         for val in readings:
-            status = self.act(val)
-            print(f"{val}: {status}")
+            aqi_value = self.act(val)
+            print(f"{val}: {aqi_value:.2f}")
 
-agent = AQIReflexAgent(rule_set="EPA_Standard")
-agent.run('sensor_data.csv')
+if __name__ == "__main__":
+    agent = AQIModelBasedAgent()
+    agent.run('sensor_data.csv')
