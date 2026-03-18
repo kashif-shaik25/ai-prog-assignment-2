@@ -1,6 +1,6 @@
 this program calculates the actual cumulative distance across a network of highways.
 
-outputs distances from HYD
+outputs shortest distances from HYD. can be modified to take user input fo rboth source and destination
 
 When navigating a map where every road has a different "cost" (length), we use **Dijkstra’s Algorithm** 
 
